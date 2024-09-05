@@ -1,0 +1,56 @@
+﻿using Heist.Core.DTO;
+using Heist.Core.Entities;
+using Heist.Core.Interfaces.Repository;
+using Heist.Core.Interfaces.Services;
+
+
+
+public class MemberService : IMemberService
+{
+    private readonly IMemberRepository _memberRepository;
+
+    public MemberService(IMemberRepository memberRepository)
+    {
+        _memberRepository = memberRepository;
+    }
+
+    public async Task<CreateMemberResult> CreateMemberAsync(MemberDto memberDto)
+    {
+        // Check if at least one skill is provided
+        if (memberDto.Skills == null || memberDto.Skills.Count == 0)
+        {
+            return CreateMemberResult.Failure("At least one skill is required.");
+        }
+
+        // Validate each skill to ensure Name is not null or empty
+        foreach (var skill in memberDto.Skills)
+        {
+            if (string.IsNullOrWhiteSpace(skill.Name))
+            {
+                return CreateMemberResult.Failure("Each skill must have a valid name.");
+            }
+        }
+
+        // Create the new Member object
+        var newMember = new Member
+        {
+            Email = memberDto.Email,
+            Sex = memberDto.Sex,
+            Status = memberDto.Status,
+            Skills = memberDto.Skills.Select(s => new Skill
+            {
+                Name = s.Name,
+                Level = s.Level
+            }).ToList(),
+            MainSkillId = memberDto.MainSkillId
+        };
+
+        // Add the new member to the repository
+        var memberId = await _memberRepository.AddMemberAsync(newMember);
+
+        return CreateMemberResult.Success(memberId);
+    }
+
+}
+
+

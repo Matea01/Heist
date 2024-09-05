@@ -16,26 +16,42 @@ namespace Heist.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [Required]
+
+        [Required] // The Name field is required
         [MaxLength(100)]
-        public required string Name { get; set; }
+        public string Name { get; set; }
+
 
         [Required]
+        [EnumDataType(typeof(MemberSex), ErrorMessage = "Sex must be either 'M' or 'F'.")]
         public MemberSex Sex { get; set; }
+
 
         [Required]
         [EmailAddress]
-        [MaxLength(255)]
-        public required string Email { get; set; }
+        [MaxLength(50)]
+        public  string Email { get; set; }
 
-        public List<Skill> Skills { get; set; } = new List<Skill>();
-
-        [MaxLength(100)]
-        public string? MainSkill { get; set; }
 
         [Required]
+        public List<Skill> Skills { get; set; } 
+
+
+        [MaxLength(100)]
+        [RegularExpression(@"^\*{1,10}$", ErrorMessage = "Level must be between 1 and 10 asterisk characters.")]
+
+        //public string? MainSkill { get; set; }
+
+        // Optional reference to one of the skills from the skills list
+        [ForeignKey("MainSkillId")]
+        public Skill MainSkill { get; set; }
+        public int? MainSkillId { get; set; }
+
+
         [MaxLength(20)]
-        public required string Status { get; set; }
+
+        [EnumDataType(typeof(MemberStatus), ErrorMessage = "Invalid status value.")]
+        public  string Status { get; set; }
 
     }
 }

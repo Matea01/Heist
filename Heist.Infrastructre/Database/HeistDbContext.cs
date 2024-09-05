@@ -20,16 +20,30 @@ namespace Heist.Infrastructure.Database
         public DbSet<Skill> Skill { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            // Configure one-to-many relationship between Member and Skill
+            // Configuring unique constraints
             modelBuilder.Entity<Member>()
-                .HasMany(m => m.Skills)
-                .WithOne(s => s.HeistMember)
-                .HasForeignKey(s => s.HeistMemberId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .HasIndex(m => m.Email)
+                .IsUnique();
 
-            // Additional configuration if needed
+            modelBuilder.Entity<Skill>()
+                .HasIndex(s => s.Name)
+                .IsUnique();
+
+            // Storing enums as strings in the database
+            modelBuilder.Entity<Member>()
+                .Property(m => m.Sex)
+                .HasConversion<string>(); // Store Sex enum as string
+
+            modelBuilder.Entity<Member>()
+                .Property(m => m.Status)
+                .HasConversion<string>(); // Store Status enum as string
+
+            // Optional: Set up cascading behavior for MainSkill
+            modelBuilder.Entity<Member>()
+                .HasOne(m => m.MainSkill)
+                .WithMany()
+                .HasForeignKey(m => m.MainSkillId)
+                .OnDelete(DeleteBehavior.SetNull); // Optional relationship, so if skill is deleted, MainSkill is set to null
         }
         public HeistDbContext(DbContextOptions options) : base(options)
         { }
