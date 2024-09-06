@@ -6,6 +6,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Heist.Core.DTO
 {
+    public class UpdateMemberSkillDto
+    {
+        public int MemberId { get; set; } // Id of the member
+        public List<SkillDto> Skills { get; set; } // The new list of skills to update
+    }
     public class MemberDto
     {
         [Required]
