@@ -9,6 +9,9 @@ namespace Heist.Core.DTO
     public class MemberDto
     {
         [Required]
+        public string Name { get; set; }
+
+        [Required]
         [EmailAddress]
         public  string Email { get; set; }
 
@@ -22,6 +25,8 @@ namespace Heist.Core.DTO
         public  List<SkillDto> Skills { get; set; }
 
         public int? MainSkillId { get; set; } // Optional reference to main skill
+
+
     }
 }
 

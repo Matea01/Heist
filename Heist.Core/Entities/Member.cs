@@ -34,7 +34,7 @@ namespace Heist.Core.Entities
 
 
         [Required]
-        public List<Skill> Skills { get; set; } 
+        public List<Skill> Skills { get; set; } = new List<Skill>();// initialize to avoid null ref exception
 
 
         [MaxLength(100)]
@@ -43,8 +43,9 @@ namespace Heist.Core.Entities
         //public string? MainSkill { get; set; }
 
         // Optional reference to one of the skills from the skills list
+
         [ForeignKey("MainSkillId")]
-        public Skill MainSkill { get; set; }
+        public Skill? MainSkill { get; set; }
         public int? MainSkillId { get; set; }
 
 

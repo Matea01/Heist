@@ -13,7 +13,6 @@ public class MemberService : IMemberService
     {
         _memberRepository = memberRepository;
     }
-
     public async Task<CreateMemberResult> CreateMemberAsync(MemberDto memberDto)
     {
         // Check if at least one skill is provided
@@ -35,17 +34,19 @@ public class MemberService : IMemberService
         var newMember = new Member
         {
             Email = memberDto.Email,
+            Name = memberDto.Name,
             Sex = memberDto.Sex,
             Status = memberDto.Status,
+            MainSkillId = memberDto.MainSkillId,
+            // Assign Skills directly here
             Skills = memberDto.Skills.Select(s => new Skill
             {
                 Name = s.Name,
-                Level = s.Level
-            }).ToList(),
-            MainSkillId = memberDto.MainSkillId
+                Level = s.Level,
+            }).ToList()
         };
 
-        // Add the new member to the repository
+        // Add the new member to the repository (this saves the member and assigns an Id)
         var memberId = await _memberRepository.AddMemberAsync(newMember);
 
         return CreateMemberResult.Success(memberId);

@@ -11,6 +11,11 @@ using Heist.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
+// Configure logging
+builder.Logging.ClearProviders(); // Remove default providers (like Console)
+builder.Logging.AddConsole(); // Add Console logging
+builder.Logging.AddDebug(); // Add Debug logging
+// Add other logging providers if needed
 
 // Add services to the container.
 

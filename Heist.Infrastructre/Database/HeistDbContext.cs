@@ -17,34 +17,29 @@ namespace Heist.Infrastructure.Database
         //}
 
         public DbSet<Member> Member { get; set; }
-        public DbSet<Skill> Skill { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configuring unique constraints
+            // Configuring the owned type 'Skills' as a collection
             modelBuilder.Entity<Member>()
-                .HasIndex(m => m.Email)
-                .IsUnique();
+                .OwnsMany(m => m.Skills, s =>
+                {
+                    s.WithOwner().HasForeignKey("MemberId"); // Shadow property for the foreign key
+                    s.Property(skill => skill.Name).HasColumnName("SkillName");
+                    s.Property(skill => skill.Level).HasColumnName("SkillLevel");
+                });
 
-            modelBuilder.Entity<Skill>()
-                .HasIndex(s => s.Name)
-                .IsUnique();
-
-            // Storing enums as strings in the database
+            // Configuring the owned type 'MainSkill' as a single entity
             modelBuilder.Entity<Member>()
-                .Property(m => m.Sex)
-                .HasConversion<string>(); // Store Sex enum as string
+                .OwnsOne(m => m.MainSkill, s =>
+                {
+                    s.Property(skill => skill.Name).HasColumnName("MainSkillName");
+                    s.Property(skill => skill.Level).HasColumnName("MainSkillLevel");
+                });
 
-            modelBuilder.Entity<Member>()
-                .Property(m => m.Status)
-                .HasConversion<string>(); // Store Status enum as string
-
-            // Optional: Set up cascading behavior for MainSkill
-            modelBuilder.Entity<Member>()
-                .HasOne(m => m.MainSkill)
-                .WithMany()
-                .HasForeignKey(m => m.MainSkillId)
-                .OnDelete(DeleteBehavior.SetNull); // Optional relationship, so if skill is deleted, MainSkill is set to null
+            // Optionally, you may want to configure any additional constraints or settings
+            // Example: if 'MainSkillId' is nullable, ensure it is correctly handled in your model
         }
+
         public HeistDbContext(DbContextOptions options) : base(options)
         { }
     }
