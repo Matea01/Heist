@@ -36,4 +36,25 @@ public class MemberController : ControllerBase
 
         return CreatedAtAction(nameof(CreateMember), new { id = result.MemberId }, result); // 201 Created on success
     }
+
+    [HttpPut("{id}/skills")]
+    public async Task<IActionResult> UpdateMemberSkills(int id, [FromBody] UpdateMemberSkillDto updateMemberSkillDto)
+    {
+        _logger.LogInformation("Updating member {MemberId} skills", id);
+
+        if (id != updateMemberSkillDto.MemberId)
+        {
+            return BadRequest("Member ID mismatch.");
+        }
+
+        var result = await _memberService.UpdateMemberSkillsAsync(updateMemberSkillDto);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Errors); // 400 Bad Request if update fails
+        }
+
+        return NoContent(); // 204 No Content on success
+    }
+
 }

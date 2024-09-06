@@ -10,6 +10,7 @@ namespace Heist.Core.Interfaces.Repository
     public interface IMemberRepository
     {
         Task<int> AddMemberAsync(Member member);
-        
+        Task<Member> GetMemberByIdAsync(int memberId);
+        Task UpdateMemberAsync(Member member);
     }
 }

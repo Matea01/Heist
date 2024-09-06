@@ -52,6 +52,36 @@ public class MemberService : IMemberService
         return CreateMemberResult.Success(memberId);
     }
 
+    public async Task<UpdateMemberResult> UpdateMemberSkillsAsync(UpdateMemberSkillDto updateMemberSkillDto)
+    {
+        var member = await _memberRepository.GetMemberByIdAsync(updateMemberSkillDto.MemberId);
+
+        if (member == null)
+        {
+            return UpdateMemberResult.Failure("Member not found");
+        }
+
+        // Validate each skill to ensure Name is not null or empty
+        foreach (var skill in updateMemberSkillDto.Skills)
+        {
+            if (string.IsNullOrWhiteSpace(skill.Name))
+            {
+                return UpdateMemberResult.Failure("Each skill must have a valid name.");
+            }
+        }
+
+        // Update member's skills
+        member.Skills = updateMemberSkillDto.Skills.Select(s => new Skill
+        {
+            Name = s.Name,
+            Level = s.Level
+        }).ToList();
+
+        // Update the member in the repository
+        await _memberRepository.UpdateMemberAsync(member);
+
+        return UpdateMemberResult.Success();
+    }
 }
 
 
