@@ -8,7 +8,7 @@ namespace Heist.Core.Enums
 {
     public enum MemberSex
     {
-        Female = 0,
-        Male = 1,
+        F ,
+        M ,
     }
 }

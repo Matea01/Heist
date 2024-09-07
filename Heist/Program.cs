@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Heist.Core.Interfaces;
 using Heist.Infrastructure;
+using System.Text.Json.Serialization;
 
 
 
@@ -20,8 +21,13 @@ builder.Logging.AddDebug(); // Add Debug logging
 // Add services to the container.
 
 
-// Register controllers
-builder.Services.AddControllers();
+// Register controllers and configure JSON options for enum string serialization
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configure enums to be serialized as strings instead of numeric values
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

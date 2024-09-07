@@ -42,12 +42,7 @@ public class MemberController : ControllerBase
     {
         _logger.LogInformation("Updating member {MemberId} skills", id);
 
-        if (id != updateMemberSkillDto.MemberId)
-        {
-            return BadRequest("Member ID mismatch.");
-        }
-
-        var result = await _memberService.UpdateMemberSkillsAsync(updateMemberSkillDto);
+        var result = await _memberService.UpdateMemberSkillsAsync(id, updateMemberSkillDto);
 
         if (!result.IsSuccess)
         {
@@ -57,4 +52,16 @@ public class MemberController : ControllerBase
         return NoContent(); // 204 No Content on success
     }
 
+    [HttpDelete("{memberId}/skills/{skillName}")]
+    public async Task<IActionResult> DeleteSkill(int memberId, string skillName)
+    {
+        var result = await _memberService.RemoveSkillAsync(memberId, skillName);
+
+        if (result)
+        {
+            return NoContent();  // 204 No Content
+        }
+
+        return NotFound();  // 404 Not Found
+    }
 }

@@ -8,9 +8,9 @@ namespace Heist.Core.Enums
 {
     public enum MemberStatus
     {
-        Available = 0,
-        Expired = 1,
-        Incarcerated = 2,
-        Retired = 3,
+        AVAILABLE ,
+        EXPIRED ,
+        INCARCERATED ,
+        RETIRED
     }
 }

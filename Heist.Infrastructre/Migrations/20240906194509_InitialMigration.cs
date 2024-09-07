@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Heist.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,11 +25,8 @@ namespace Heist.Infrastructure.Migrations
                     Sex = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MainSkillName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
+                    MainSkill = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MainSkillLevel = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MainSkillId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -40,7 +37,7 @@ namespace Heist.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Member_Skills",
+                name: "Skill",
                 columns: table => new
                 {
                     MemberId = table.Column<int>(type: "int", nullable: false),
@@ -53,9 +50,9 @@ namespace Heist.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Member_Skills", x => new { x.MemberId, x.Id });
+                    table.PrimaryKey("PK_Skill", x => new { x.MemberId, x.Id });
                     table.ForeignKey(
-                        name: "FK_Member_Skills_Member_MemberId",
+                        name: "FK_Skill_Member_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Member",
                         principalColumn: "Id",
@@ -68,7 +65,7 @@ namespace Heist.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Member_Skills");
+                name: "Skill");
 
             migrationBuilder.DropTable(
                 name: "Member");

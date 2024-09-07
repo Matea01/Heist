@@ -13,13 +13,12 @@ public class MemberRepository : IMemberRepository
     {
         _dbContext = context;
     }
-
-    public async Task<int> AddMemberAsync(Member member)
+    public async Task<Member> AddMemberAsync(Member member)
     {
         await _dbContext.AddAsync(member);
         await _dbContext.SaveChangesAsync();
 
-        return member.Id; // Return the newly created member's ID
+        return member; // Return the newly created member obj
     }
 
     public async Task<Member> GetMemberByIdAsync(int memberId)

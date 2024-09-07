@@ -17,7 +17,7 @@ namespace Heist.Core.Entities
         public int Id { get; set; }
 
 
-        [Required] // The Name field is required
+        [Required] 
         [MaxLength(100)]
         public string Name { get; set; }
 
@@ -36,21 +36,10 @@ namespace Heist.Core.Entities
         [Required]
         public List<Skill> Skills { get; set; } = new List<Skill>();// initialize to avoid null ref exception
 
-
-        [MaxLength(100)]
-        [RegularExpression(@"^\*{1,10}$", ErrorMessage = "Level must be between 1 and 10 asterisk characters.")]
-
-        //public string? MainSkill { get; set; }
-
-        // Optional reference to one of the skills from the skills list
-
-        [ForeignKey("MainSkillId")]
-        public Skill? MainSkill { get; set; }
-        public int? MainSkillId { get; set; }
+        public string? MainSkill { get; set; }
 
 
         [MaxLength(20)]
-
         [EnumDataType(typeof(MemberStatus), ErrorMessage = "Invalid status value.")]
         public  string Status { get; set; }
 

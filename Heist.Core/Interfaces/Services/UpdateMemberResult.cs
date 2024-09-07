@@ -21,5 +21,4 @@ namespace Heist.Core.Interfaces.Services
             return new UpdateMemberResult { IsSuccess = false, Errors = errors };
         }
     }
-
 }

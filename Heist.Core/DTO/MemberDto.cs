@@ -8,30 +8,28 @@ namespace Heist.Core.DTO
 {
     public class UpdateMemberSkillDto
     {
-        public int MemberId { get; set; } // Id of the member
-        public List<SkillDto> Skills { get; set; } // The new list of skills to update
+        public List<SkillDto> skills { get; set; } // The new list of skills to update
+        public string mainSkill { get; set; }
     }
     public class MemberDto
     {
         [Required]
-        public string Name { get; set; }
+        public string name { get; set; }
 
         [Required]
         [EmailAddress]
-        public  string Email { get; set; }
+        public  string email { get; set; }
 
         [Required]
-        public MemberSex Sex { get; set; }
+        public MemberSex sex { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public string status { get; set; }
 
         [Required]
-        public  List<SkillDto> Skills { get; set; }
+        public  List<SkillDto> skills { get; set; }
 
-        public int? MainSkillId { get; set; } // Optional reference to main skill
-
-
+        public string mainSkill { get; set; }
     }
 }
 
