@@ -34,7 +34,7 @@ namespace Heist.Core.Entities
 
 
         [Required]
-        public List<Skill> Skills { get; set; } = new List<Skill>();// initialize to avoid null ref exception
+        public List<MemberSkill> MemberSkills { get; set; } = new List<MemberSkill>();
 
         public string? MainSkill { get; set; }
 

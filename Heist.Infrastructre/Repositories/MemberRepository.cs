@@ -25,8 +25,9 @@ public class MemberRepository : IMemberRepository
     {
         // Retrieve the member with their related skills
         return await _dbContext.Member
-            .Include(m => m.Skills) // Include skills so they are loaded together with the member
-            .FirstOrDefaultAsync(m => m.Id == memberId); // Find the member by Id
+            .Include(m => m.MemberSkills) // Include skills so they are loaded together with the member
+            .ThenInclude(msr => msr.Skill)
+            .FirstAsync(m => m.Id == memberId); // Find the member by Id
     }
 
     public async Task UpdateMemberAsync(Member member)
