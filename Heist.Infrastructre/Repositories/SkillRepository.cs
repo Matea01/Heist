@@ -19,17 +19,32 @@ namespace Heist.Infrastructure.Repositories
             _dbContext = context;
         }
 
-        public async Task<Skill> GetSkillByNameAsync(string skillName)
+        public async Task<Skill?> GetSkillByNameAsync(string skillName)
         {
-            return await _dbContext.Skills
-                .FirstAsync(s => s.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase));
+            return await _dbContext.Skills.Where(s => s.Name.ToLower() == skillName.ToLower())
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Skill> AddSkillAsync(Skill skill)
         {
-            _dbContext.Skills.Add(skill);
-            await _dbContext.SaveChangesAsync();
-            return skill;
+            try
+            {
+                _dbContext.Skills.Add(skill);
+                await _dbContext.SaveChangesAsync();
+                return skill;
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log or inspect the exception details here
+                Console.WriteLine(ex.Message);
+                throw; // Re-throw the exception to keep the stack trace
+            }
         }
+        public async Task<MemberSkill?> GetMemberSkillAsync(int memberId, int skillId)
+        {
+            return await _dbContext.MemberSkills.Where(s => s.MemberId == memberId && s.SkillId == skillId)
+                .FirstOrDefaultAsync();
+        }
+
     }
 }

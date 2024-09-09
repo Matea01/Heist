@@ -14,6 +14,6 @@ namespace Heist.Core.Entities
         public int SkillId { get; set; } 
         public Skill Skill { get; set; } 
 
-        public string Level { get; set; } 
+        public string? Level { get; set; } 
     }
 }

@@ -12,16 +12,11 @@ namespace Heist.Core.Entities
     
     public class Skill
     {
-
         public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]
         public required string Name { get; set; }
 
-
-        [MaxLength(10)]
-        [RegularExpression(@"^\*{0,10}$", ErrorMessage = "Level must consist of up to 10 asterisks.")]
-        public string Level { get; set; }
     }
 }

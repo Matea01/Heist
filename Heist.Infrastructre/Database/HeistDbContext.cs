@@ -58,11 +58,6 @@ namespace Heist.Infrastructure.Database
                 .HasIndex(m => m.Email)
                 .IsUnique();
 
-            
-            modelBuilder.Entity<HeistEntity>()
-                .HasIndex(h => h.Name)
-                .IsUnique();
         }
-
     }
 }

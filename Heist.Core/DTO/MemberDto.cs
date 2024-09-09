@@ -8,9 +8,10 @@ namespace Heist.Core.DTO
 {
     public class UpdateMemberSkillDto
     {
-        public List<SkillDto> skills { get; set; } // The new list of skills to update
+        public List<MemberSkillDto> skills { get; set; } // The new list of skills to update
         public string mainSkill { get; set; }
     }
+
     public class MemberDto
     {
         [Required]
@@ -27,7 +28,7 @@ namespace Heist.Core.DTO
         public string status { get; set; }
 
         [Required]
-        public  List<SkillDto> skills { get; set; }
+        public  List<MemberSkillDto> skills { get; set; }
 
         public string mainSkill { get; set; }
     }

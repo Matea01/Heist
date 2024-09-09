@@ -1,8 +1,8 @@
 ﻿using Heist.Core.DTO;
-using Heist.Core.Entities;
 using Heist.Core.Interfaces.Repository;
 using Heist.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Heist.Controllers
 {
@@ -10,61 +10,60 @@ namespace Heist.Controllers
     [Route("api/[controller]")]
     public class HeistController : ControllerBase
     {
+        private readonly IHeistService _heistService;
         private readonly IHeistRepository _heistRepository;
+        private readonly ILogger<MemberController> _logger;
 
-        public HeistController(IHeistRepository heistRepository)
+        public HeistController(IHeistRepository heistRepository, ILogger<MemberController> logger, IHeistService heistService)
         {
             _heistRepository = heistRepository;
+            _logger = logger;
+            _heistService = heistService;
         }
 
         // POST /heist
         [HttpPost]
         public async Task<IActionResult> AddHeist([FromBody] AddHeistDto addHeistDto)
         {
-            // Validate input
+            _logger.LogInformation("Creating new heist with data: {HeistDto}", addHeistDto);
+
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState); // 400 Bad Request if the model is invalid
             }
-
-            // Check for unique heist name
-            if (await _heistRepository.HeistExistsAsync(addHeistDto.name))
+            try
             {
-                return BadRequest(new { message = "A heist with the same name already exists." });
-            }
+                var result = await _heistService.CreateHeistAsync(addHeistDto);
 
-            // Create a new Heist object from the DTO
-            var heist = new HeistEntity
-            {
-                Name = addHeistDto.name,
-                Location = addHeistDto.location,
-                StartTime = addHeistDto.startTime,
-                EndTime = addHeistDto.endTime,
-                Skills = addHeistDto.skills.Select(skillDto => new Skill
+                if (!result.IsSuccess)
                 {
-                    Name = skillDto.name,
-                    Level = skillDto.level,
-                }).ToList()
-            };
+                    return BadRequest(result.Errors); // 400 Bad Request if creation fails due to validation
+                }
 
-            // Save the new heist
-            await _heistRepository.AddHeistAsync(heist);
-
-            // Return 201 Created with Location header pointing to the new heist
-            return CreatedAtAction(nameof(GetHeistById), new { id = heist.Id }, null);
-        }
-
-        // Example: GET /heist/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetHeistById(int id)
-        {
-            var heist = await _heistRepository.GetHeistByIdAsync(id);
-            if (heist == null)
-            {
-                return NotFound();
+                return CreatedAtAction(nameof(AddHeist), new { id = result.HeistId }, result); // 201 Created on success
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while adding the heist.");
 
-            return Ok(heist);
+                // Return a 400 Bad Request in case of an exception
+                return BadRequest(new { message = "An error occurred while processing the request." });
+            }
+          
         }
     }
+
+    //// Example: GET /heist/{id}
+    //[HttpGet("{id}")]
+    //public async Task<IActionResult> GetHeistById(int id)
+    //{
+    //    var heist = await _heistRepository.GetHeistByIdAsync(id);
+    //    if (heist == null)
+    //    {
+    //        return NotFound();
+    //    }
+
+    //    return Ok(heist);
+    //}
 }
+

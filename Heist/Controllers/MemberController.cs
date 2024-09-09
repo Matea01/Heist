@@ -1,8 +1,6 @@
 ﻿using Heist.Core.DTO;
 using Heist.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -22,19 +20,35 @@ public class MemberController : ControllerBase
     public async Task<IActionResult> CreateMember([FromBody] MemberDto memberDto)
     {
         _logger.LogInformation("Creating member with data: {MemberDto}", memberDto);
+
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState); // 400 Bad Request if the model is invalid
         }
-
-        var result = await _memberService.CreateMemberAsync(memberDto);
-
-        if (!result.IsSuccess)
+        try
         {
-            return BadRequest(result.Errors); // 400 Bad Request if creation fails due to validation
+            var result = await _memberService.CreateMemberAsync(memberDto);
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Errors); // 400 Bad Request if creation fails due to validation
+            }
+
+            return CreatedAtAction(nameof(CreateMember), new { id = result.MemberId },null); // 201 Created on success
+        }
+        catch { return BadRequest(); }
+    }
+
+    // GET /api/members/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetMemberById(int id)
+    {
+        var member = await _memberService.GetMemberByIdAsync(id);
+        if (member == null)
+        {
+            return NotFound(new { message = "Member not found." });
         }
 
-        return CreatedAtAction(nameof(CreateMember), new { id = result.MemberId }, result); // 201 Created on success
+        return Ok(member);
     }
 
     [HttpPut("{id}/skills")]
@@ -44,9 +58,14 @@ public class MemberController : ControllerBase
 
         var result = await _memberService.UpdateMemberSkillsAsync(id, updateMemberSkillDto);
 
+
         if (!result.IsSuccess)
         {
-            return BadRequest(result.Errors); // 400 Bad Request if update fails
+            if (result.Error.Equals("Member not found"))
+            {
+                return NotFound();
+            }
+            return BadRequest(result.Error); // 400 Bad Request if update fails
         }
 
         return NoContent(); // 204 No Content on success

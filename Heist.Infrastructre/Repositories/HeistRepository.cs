@@ -33,8 +33,11 @@ namespace Heist.Infrastructure.Repositories
             .FirstAsync(h => h.Id == heistId); 
         }
 
-
-
-
+        public async Task<HeistEntity> GetHeistByNameAsync(string? name)
+        {
+            return await _dbContext.HeistEntity
+            .AsNoTracking()
+            .FirstAsync(h => h.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Heist.Core.Interfaces;
 using Heist.Infrastructure;
 using System.Text.Json.Serialization;
+using Heist.Infrastructure.Repositories;
 
 
 
@@ -27,6 +28,8 @@ builder.Services.AddControllers()
     {
         // Configure enums to be serialized as strings instead of numeric values
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
     });
 
 
@@ -55,9 +58,10 @@ builder.Services.AddDbContext<HeistDbContext>(options =>
 
 // Register services and repositories for Dependency Injection
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IHeistService, HeistService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-
-
+builder.Services.AddScoped<IHeistRepository, HeistRepository>();
+builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

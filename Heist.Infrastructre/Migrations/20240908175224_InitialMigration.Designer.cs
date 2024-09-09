@@ -4,6 +4,7 @@ using Heist.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Heist.Infrastructure.Migrations
 {
     [DbContext(typeof(HeistDbContext))]
-    partial class HeistDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240908175224_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,6 +123,7 @@ namespace Heist.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Level")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("MemberId", "SkillId");
@@ -136,6 +140,11 @@ namespace Heist.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<string>("Name")
                         .IsRequired()

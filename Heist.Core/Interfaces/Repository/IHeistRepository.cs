@@ -13,5 +13,6 @@ namespace Heist.Core.Interfaces.Repository
         Task<bool> HeistExistsAsync(string name);
         Task AddHeistAsync(HeistEntity heist);
         Task<HeistEntity> GetHeistByIdAsync(int id);
+        Task<HeistEntity> GetHeistByNameAsync(string name);
     }
 }
