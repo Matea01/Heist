@@ -1,6 +1,4 @@
 ﻿using Heist.Core.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -19,7 +17,7 @@ namespace Heist.Core.DTO
 
         [Required]
         [EmailAddress]
-        public  string email { get; set; }
+        public string email { get; set; }
 
         [Required]
         public MemberSex sex { get; set; }
@@ -28,7 +26,7 @@ namespace Heist.Core.DTO
         public string status { get; set; }
 
         [Required]
-        public  List<MemberSkillDto> skills { get; set; }
+        public List<MemberSkillDto> skills { get; set; }
 
         public string mainSkill { get; set; }
     }

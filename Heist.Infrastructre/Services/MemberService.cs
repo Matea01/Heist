@@ -15,20 +15,17 @@ public class MemberService : IMemberService
     }
     public async Task<CreateMemberResult> CreateMemberAsync(MemberDto memberDto)
     {
-        // Check if the email is already in use
         var existingMember = await _memberRepository.GetMemberByEmailAsync(memberDto.email);
         if (existingMember != null)
         {
             return CreateMemberResult.Failure("A member with this email already exists.");
         }
 
-        // Check if at least one skill is provided
         if (memberDto.skills == null || memberDto.skills.Count == 0)
         {
             return CreateMemberResult.Failure("At least one skill is required.");
         }
 
-        // Validate each skill to ensure Name is not null or empty
         foreach (var skill in memberDto.skills)
         {
             if (string.IsNullOrWhiteSpace(skill.name))
@@ -37,7 +34,6 @@ public class MemberService : IMemberService
             }
         }
 
-        // Create a new Member object
         var newMember = new Member
         {
             Email = memberDto.email,
@@ -45,33 +41,27 @@ public class MemberService : IMemberService
             Sex = memberDto.sex,
             Status = memberDto.status,
             MainSkill = memberDto.mainSkill,
-            MemberSkills = new List<MemberSkill>() // Initialize the list for MemberSkills
+            MemberSkills = new List<MemberSkill>()
         };
 
-
-        // Process each skill in the memberDto
         foreach (var skillDto in memberDto.skills)
         {
-            // Check if the skill already exists in the repository
             var skill = await _skillRepository.GetSkillByNameAsync(skillDto.name);
             if (skill == null)
             {
-                // If the skill does not exist, create a new Skill
                 skill = new Skill { Name = skillDto.name };
                 await _skillRepository.AddSkillAsync(skill);
             }
 
-            // Create the MemberSkill association and add it to the MemberSkills list
             var memberSkill = new MemberSkill
             {
                 Skill = skill,
-                Level = skillDto.level // Set the skill level for the member
+                Level = skillDto.level
             };
 
             newMember.MemberSkills.Add(memberSkill);
         }
 
-        // Add the new member to the repository (this saves the member and assigns an Id)
         var member = await _memberRepository.AddMemberAsync(newMember);
 
         return CreateMemberResult.Success(member.Id);
@@ -85,28 +75,25 @@ public class MemberService : IMemberService
 
     public async Task<bool> RemoveSkillAsync(int memberId, string skillName)
     {
-        // Get the member 
         var member = await _memberRepository.GetMemberByIdAsync(memberId);
 
         if (member == null)
         {
-            return false; //member not found 
+            return false;
         }
 
-        // Find the skill to remove within the member's skills
         var skillToRemove = member.MemberSkills
             .FirstOrDefault(ms => ms.Skill.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase));
 
         if (skillToRemove == null)
         {
-            return false;  // Skill not found in the member's skills
+            return false;
         }
-        // Remove the skill from the member's MemberSkills list
         member.MemberSkills.Remove(skillToRemove);
-        // Update the member after modification
+
         await _memberRepository.UpdateMemberAsync(member);
 
-        return true;  // Skill removed successfully
+        return true;
     }
 
     public async Task<UpdateMemberResult> UpdateMemberSkillsAsync(int id, UpdateMemberSkillDto updateMemberSkillDto)
@@ -118,7 +105,6 @@ public class MemberService : IMemberService
             return UpdateMemberResult.Failure("Member not found");
         }
 
-        // Validate each skill to ensure Name is not null or empty
         foreach (var skill in updateMemberSkillDto.skills)
         {
             if (string.IsNullOrWhiteSpace(skill.name))
@@ -126,7 +112,7 @@ public class MemberService : IMemberService
                 return UpdateMemberResult.Failure("Each skill must have a valid name.");
             }
         }
-        // Check if the main skill exists in the skills list
+
         var mainSkillDto = updateMemberSkillDto.skills
             .SingleOrDefault(skill => skill.name.Equals(updateMemberSkillDto.mainSkill, StringComparison.OrdinalIgnoreCase));
 
@@ -137,7 +123,6 @@ public class MemberService : IMemberService
 
         foreach (var skillDto in updateMemberSkillDto.skills)
         {
-            // Check if the skill exists in the repository, if not, create it
             var skill = await _skillRepository.GetSkillByNameAsync(skillDto.name);
             if (skill == null)
             {
@@ -145,7 +130,6 @@ public class MemberService : IMemberService
                 await _skillRepository.AddSkillAsync(skill);
             }
 
-            // Create the MemberSkill association and add it to the MemberSkills list
             var memberSkill = await _skillRepository.GetMemberSkillAsync(id, skill.Id);
             if (memberSkill == null)
             {
@@ -159,10 +143,9 @@ public class MemberService : IMemberService
 
             member.MemberSkills.Add(memberSkill);
         }
-        // Set the main skill of the member
         member.MainSkill = updateMemberSkillDto.mainSkill;
 
-        // Update the member in the repository
+
         await _memberRepository.UpdateMemberAsync(member);
 
         return UpdateMemberResult.Success();

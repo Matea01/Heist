@@ -1,9 +1,4 @@
 ﻿using Heist.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Heist.Core.Interfaces.Repository
 {
@@ -13,6 +8,9 @@ namespace Heist.Core.Interfaces.Repository
         Task<bool> HeistExistsAsync(string name);
         Task AddHeistAsync(HeistEntity heist);
         Task<HeistEntity> GetHeistByIdAsync(int id);
-        Task<HeistEntity> GetHeistByNameAsync(string name);
+        Task<HeistEntity?> GetHeistByNameAsync(string name);
+        Task UpdateHeistAsync(HeistEntity heist);
+        Task UpdateHeistSkillsAsync(int heistId, List<HeistSkillRequirement> updatedSkills);
+        Task<HeistSkillRequirement?> GetHeistSkillRequirementAsync(int heistId, int skillId);
     }
 }

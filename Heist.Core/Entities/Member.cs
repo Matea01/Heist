@@ -1,12 +1,6 @@
 ﻿using Heist.Core.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Heist.Core.Entities
 {
@@ -17,7 +11,7 @@ namespace Heist.Core.Entities
         public int Id { get; set; }
 
 
-        [Required] 
+        [Required]
         [MaxLength(100)]
         public string Name { get; set; }
 
@@ -30,7 +24,7 @@ namespace Heist.Core.Entities
         [Required]
         [EmailAddress]
         [MaxLength(50)]
-        public  string Email { get; set; }
+        public string Email { get; set; }
 
 
         [Required]
@@ -41,7 +35,7 @@ namespace Heist.Core.Entities
 
         [MaxLength(20)]
         [EnumDataType(typeof(MemberStatus), ErrorMessage = "Invalid status value.")]
-        public  string Status { get; set; }
+        public string Status { get; set; }
 
     }
 }

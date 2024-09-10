@@ -35,9 +35,8 @@ namespace Heist.Infrastructure.Repositories
             }
             catch (DbUpdateException ex)
             {
-                // Log or inspect the exception details here
                 Console.WriteLine(ex.Message);
-                throw; // Re-throw the exception to keep the stack trace
+                throw; 
             }
         }
         public async Task<MemberSkill?> GetMemberSkillAsync(int memberId, int skillId)

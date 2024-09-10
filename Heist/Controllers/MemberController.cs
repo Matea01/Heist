@@ -15,7 +15,6 @@ public class MemberController : ControllerBase
         _logger = logger;
     }
 
-    // POST /member
     [HttpPost]
     public async Task<IActionResult> CreateMember([FromBody] MemberDto memberDto)
     {
@@ -33,12 +32,11 @@ public class MemberController : ControllerBase
                 return BadRequest(result.Errors); // 400 Bad Request if creation fails due to validation
             }
 
-            return CreatedAtAction(nameof(CreateMember), new { id = result.MemberId },null); // 201 Created on success
+            return CreatedAtAction(nameof(CreateMember), new { id = result.MemberId }, null); // 201 Created on success
         }
         catch { return BadRequest(); }
     }
 
-    // GET /api/members/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMemberById(int id)
     {

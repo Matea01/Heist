@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AutoMapper\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Heist.Core\Heist.Core.csproj" />
     <ProjectReference Include="..\Heist.Infrastructre\Heist.Infrastructure.csproj" />
 	  <!-- 

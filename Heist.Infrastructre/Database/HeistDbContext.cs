@@ -15,12 +15,11 @@ namespace Heist.Infrastructure.Database
         { }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure unique constraint on Skill name
+
             modelBuilder.Entity<Skill>()
                 .HasIndex(s => s.Name)
                 .IsUnique();
 
-            // Configure the many-to-many relationship between Member and Skill
             modelBuilder.Entity<MemberSkill>()
                 .HasKey(ms => new { ms.MemberId, ms.SkillId });
 
@@ -34,12 +33,12 @@ namespace Heist.Infrastructure.Database
                 .WithMany()
                 .HasForeignKey(ms => ms.SkillId);
 
-            
+
             modelBuilder.Entity<HeistEntity>()
                 .HasIndex(h => h.Name)
                 .IsUnique();
 
-            
+
             modelBuilder.Entity<HeistSkillRequirement>()
                 .HasKey(hsr => new { hsr.HeistId, hsr.SkillId });
 
@@ -53,7 +52,7 @@ namespace Heist.Infrastructure.Database
                 .WithMany()
                 .HasForeignKey(hsr => hsr.SkillId);
 
-            
+
             modelBuilder.Entity<Member>()
                 .HasIndex(m => m.Email)
                 .IsUnique();

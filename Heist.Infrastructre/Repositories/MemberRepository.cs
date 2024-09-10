@@ -22,20 +22,16 @@ public class MemberRepository : IMemberRepository
                 await _dbContext.Member.AddAsync(member);
                 await _dbContext.SaveChangesAsync();
 
-                // Commit transaction
                 await transaction.CommitAsync();
             }
             catch (Exception ex)
             {
-                // Rollback transaction on failure
                 await transaction.RollbackAsync();
                 Console.WriteLine($"Transaction failed: {ex.Message}");
                 throw;
             }
         }
-
-
-        return member; // Return the newly created member obj
+        return member;
     }
 
     public async Task<Member> GetMemberByEmailAsync(string email)
@@ -45,19 +41,15 @@ public class MemberRepository : IMemberRepository
 
     public async Task<Member?> GetMemberByIdAsync(int memberId)
     {
-        // Retrieve the member with their related skills
         return await _dbContext.Member
-            .Include(m => m.MemberSkills) // Include skills so they are loaded together with the member
+            .Include(m => m.MemberSkills)
             .ThenInclude(msr => msr.Skill)
-            .FirstOrDefaultAsync(m => m.Id == memberId); // Find the member by Id
+            .FirstOrDefaultAsync(m => m.Id == memberId);
     }
 
     public async Task UpdateMemberAsync(Member member)
     {
-        // Update the member entity in the context
         _dbContext.Member.Update(member);
-
-        // Save changes to the database
         await _dbContext.SaveChangesAsync();
     }
 

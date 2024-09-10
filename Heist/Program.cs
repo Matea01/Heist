@@ -1,18 +1,14 @@
 using Heist.Core.Interfaces.Repository;
 using Heist.Core.Interfaces.Services;
 using Heist.Infrastructure.Database;
+using Heist.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Heist.Core.Interfaces;
-using Heist.Infrastructure;
 using System.Text.Json.Serialization;
-using Heist.Infrastructure.Repositories;
-
-
-
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Configure logging
 builder.Logging.ClearProviders(); // Remove default providers (like Console)
 builder.Logging.AddConsole(); // Add Console logging
@@ -50,15 +46,16 @@ builder.Services.AddDbContext<HeistDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 2)), options => 
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 2)), options =>
     {
         options.MigrationsAssembly("Heist.Infrastructure");
     });
 });
 
-// Register services and repositories for Dependency Injection
+// Add services
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IHeistService, HeistService>();
+// Add repositories
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IHeistRepository, HeistRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();

@@ -49,21 +49,34 @@ namespace Heist.Controllers
                 // Return a 400 Bad Request in case of an exception
                 return BadRequest(new { message = "An error occurred while processing the request." });
             }
-          
+
+        }
+        [HttpPatch("{heistId}/skills")]
+        public async Task<IActionResult> UpdateHeistSkills(int heistId, [FromBody] UpdateHeistSkillsDto updateSkillsDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _heistService.UpdateHeistSkillsAsync(heistId, updateSkillsDto);
+
+            if (result.IsSuccess)
+            {
+                return NoContent();
+            }
+
+            return result.Error switch
+            {
+                "Heist not found" => NotFound(result.Error),
+                "The heist has already started" => StatusCode(405, result.Error),
+                "Multiple skills with the same name and level were provided." => BadRequest(result.Error),
+                "Each skill must have a valid name." => BadRequest(result.Error),
+                _ => StatusCode(500, "An error occurred while updating the heist skills.")
+            };
         }
     }
-
-    //// Example: GET /heist/{id}
-    //[HttpGet("{id}")]
-    //public async Task<IActionResult> GetHeistById(int id)
-    //{
-    //    var heist = await _heistRepository.GetHeistByIdAsync(id);
-    //    if (heist == null)
-    //    {
-    //        return NotFound();
-    //    }
-
-    //    return Ok(heist);
-    //}
 }
+
+
 
