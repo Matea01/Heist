@@ -12,5 +12,6 @@ namespace Heist.Core.Interfaces.Repository
         Task UpdateHeistAsync(HeistEntity heist);
         Task UpdateHeistSkillsAsync(int heistId, List<HeistSkillRequirement> updatedSkills);
         Task<HeistSkillRequirement?> GetHeistSkillRequirementAsync(int heistId, int skillId);
+        Task<HeistEntity> GetHeistWithRequiredSkillsAsync(int heistId);
     }
 }

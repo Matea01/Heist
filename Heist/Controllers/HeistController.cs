@@ -54,6 +54,11 @@ namespace Heist.Controllers
         [HttpPatch("{heistId}/skills")]
         public async Task<IActionResult> UpdateHeistSkills(int heistId, [FromBody] UpdateHeistSkillsDto updateSkillsDto)
         {
+            const string HEIST_NOT_FOUND = "Heist not found";
+            const string HEIST_ALREADY_STARTED = "The heist has already started";
+            const string DUPLICATE_SKILLS = "Multiple skills with the same name and level were provided.";
+            const string INVALID_SKILL_NAME = "Each skill must have a valid name.";
+            const string GENERAL_ERROR = "An error occurred while updating the heist skills.";
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -68,12 +73,29 @@ namespace Heist.Controllers
 
             return result.Error switch
             {
-                "Heist not found" => NotFound(result.Error),
-                "The heist has already started" => StatusCode(405, result.Error),
-                "Multiple skills with the same name and level were provided." => BadRequest(result.Error),
-                "Each skill must have a valid name." => BadRequest(result.Error),
-                _ => StatusCode(500, "An error occurred while updating the heist skills.")
+                HEIST_NOT_FOUND => NotFound(result.Error),
+                HEIST_ALREADY_STARTED => StatusCode(405, result.Error),
+                DUPLICATE_SKILLS => BadRequest(result.Error),
+                INVALID_SKILL_NAME => BadRequest(result.Error),
+                _ => StatusCode(500, GENERAL_ERROR)
             };
+        }
+        [HttpGet("{heistId}/eligible_members")]
+        public async Task<IActionResult> GetEligibleMembers(int heistId)
+        {
+            // Validate model state
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _heistService.GetEligibleMembersAsync(heistId);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Error); // Handle errors such as "Heist not found"
+            }
+
+            return Ok(result.Value); // Return eligible members if successful
         }
     }
 }

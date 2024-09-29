@@ -63,5 +63,13 @@ namespace Heist.Infrastructure.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<HeistEntity> GetHeistWithRequiredSkillsAsync(int heistId)
+        {
+            return await _dbContext.HeistEntity
+                .Include(h => h.SkillRequirements)
+                .ThenInclude(sr => sr.Skill)
+                .FirstOrDefaultAsync(h => h.Id == heistId);
+        }
     }
 }

@@ -3,6 +3,7 @@ using Heist.Core.Entities;
 using Heist.Core.Interfaces.Repository;
 using Heist.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 
 public class MemberRepository : IMemberRepository
@@ -51,6 +52,13 @@ public class MemberRepository : IMemberRepository
     {
         _dbContext.Member.Update(member);
         await _dbContext.SaveChangesAsync();
+    }
+    public async Task<List<Member>> GetMembersAsync(Expression<Func<Member, bool>> predicate)
+    {
+        return await _dbContext.Member
+            .Include(m => m.MemberSkills)
+            .Where(predicate)
+            .ToListAsync();
     }
 
 

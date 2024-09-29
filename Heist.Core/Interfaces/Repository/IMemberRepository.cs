@@ -1,4 +1,5 @@
 ﻿using Heist.Core.Entities;
+using System.Linq.Expressions;
 
 namespace Heist.Core.Interfaces.Repository
 {
@@ -8,5 +9,6 @@ namespace Heist.Core.Interfaces.Repository
         Task<Member> GetMemberByEmailAsync(string email);
         Task<Member?> GetMemberByIdAsync(int memberId);
         Task UpdateMemberAsync(Member member);
+        Task<List<Member>> GetMembersAsync(Expression<Func<Member, bool>> predicate);
     }
 }
